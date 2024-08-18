@@ -1,19 +1,22 @@
 import { useState } from "react";
 import { PrimaryButton } from "../components/Button";
-import { login } from "../services/Auth";
+import { loginApi } from "../services/Auth";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 
 
 const Login = () => {
 
-    const [errMsg1,setErrMsg1] = useState("");
     const [errMsg,setErrMsg] = useState("");
+    const {login} = useAuth();
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         let jsonData = Object.fromEntries(new FormData(e.target).entries());
         
-        const resp = await login(jsonData);
+        const resp = await loginApi(jsonData);
         
         if(resp){
             if(resp.error &&  resp.error?.status != 200){
@@ -21,22 +24,8 @@ const Login = () => {
                 return;
             }
             console.log(resp)
-            let sessions = localStorage.getItem("sessions");
-            if(sessions){
-                sessions = JSON.parse(sessions);
-                sessions[resp.user.username] = {
-                    jwt: resp.jwt,
-                    user: resp.user
-                }
-                localStorage.setItem("sessions",JSON.stringify(sessions))
-            }else{
-                localStorage.setItem("sessions",JSON.stringify({[resp.user.username]: {
-                    jwt: resp.jwt,
-                    user: resp.user
-                }}))
-            }
-            localStorage.setItem("activeSession",resp.user.username)
-            window.location = "/chat"
+            login(resp.user,resp.jwt);
+            navigate("/chat");
         }
     }   
 
@@ -50,17 +39,13 @@ const Login = () => {
             onSubmit={handleLogin}
             >
                 <input name="identifier" type="text" className="m-2 p-2 border rounded-md" placeholder="Email" />
-                <div className=" text-red-600 text-xs mx-2">
-                    {errMsg1}
-                </div>
-
                 <input name="password" type="password" className="m-2 p-2 border  rounded-md" placeholder="Password" />
 
                 <div className=" text-red-600 text-xs mx-2">
                     {errMsg}
                 </div>
                 <div className="w-full text-end  text-sm px-2 ">
-                    Don't have Account? <a href="/register" className=" font-semibold hover:underline text-blue-500">Regiser Here</a>
+                    Don't have Account? <Link to="/register" className=" font-semibold hover:underline text-blue-500">Regiser Here</Link>
                 </div>
                 <button type="submit" >
                     <PrimaryButton className=" m-2 p-2  text-white ">Login</PrimaryButton>

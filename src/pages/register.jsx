@@ -4,6 +4,8 @@ import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
 import Pincode from 'react-pincode';
 import { register } from "../services/Auth";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 
 
@@ -12,7 +14,8 @@ import { register } from "../services/Auth";
 const Register = () => {
     const [phone, setPhone] = useState("");
     const [errMsg, setErrMsg] = useState("");
-
+    const navigate = useNavigate();
+    const {login} = useAuth();
     const handleRegister =async (e) => {
         e.preventDefault();
         let formData = new FormData(e.target);
@@ -51,23 +54,8 @@ const Register = () => {
                 return;
             }
             console.log(resp)
-            let sessions = localStorage.getItem("sessions");
-            if(sessions){
-                sessions = JSON.parse(sessions);
-                sessions[resp.user.username] = {
-                    jwt: resp.jwt,
-                    user: resp.user
-                }
-                localStorage.setItem("sessions",JSON.stringify(sessions))
-                
-            }else{
-                localStorage.setItem("sessions",JSON.stringify({[resp.user.username]: {
-                    jwt: resp.jwt,
-                    user: resp.user
-                }}))
-            }
-            localStorage.setItem("activeSession",resp.user.username)
-            window.location = "/chat"
+            login(resp.user,resp.jwt);
+            navigate("/chat");
         }
     }
 

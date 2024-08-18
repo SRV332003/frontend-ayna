@@ -1,6 +1,6 @@
 import { API_BASE_URL } from './client';
 
-const login = async (jsonData) => {
+const loginApi = async (jsonData) => {
 
     return await fetch(API_BASE_URL+'/api/auth/local', {
         method: 'POST',
@@ -81,4 +81,4 @@ const forget_pass_confirm = async(jsonData)=>{
 }
 
 
-export { login, register, forget_pass, forget_pass_confirm };
+export { loginApi, register, forget_pass, forget_pass_confirm };

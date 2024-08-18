@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { PrimaryButton } from "../components/Button";
-import { login } from "../services/Auth";
 import LeftMsg from "../components/leftMsg";
 import RightMsg from "../components/rightMsg";
 import socketio from "socket.io-client";

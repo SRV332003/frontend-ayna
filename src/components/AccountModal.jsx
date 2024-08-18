@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { PrimaryButton, SecondaryButton } from "./Button";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 
 
 
 const AccountModal = () => {
-    const activeSession = localStorage.getItem("activeSession");
-    const sessions = JSON.parse(localStorage.getItem("sessions"));
+    const {sessions,activeSession,switchAccount} = useAuth();
+    const navigate = useNavigate();
   return (
     // Modal with background blured
     <dialog id="accountdialog" className="modal md:w-1/4 bg-slate-300 border rounded-lg p-3">
@@ -23,7 +25,7 @@ const AccountModal = () => {
             {sessions && Object.keys(sessions).map((session, index) => {
                 if (session !== activeSession) {
                     return <SecondaryButton key={index} className="" onClick={() => {
-                        localStorage.setItem("activeSession", session);
+                        switchAccount(session);
                         window.location.reload();
                     }}>{sessions[session].user.username}</SecondaryButton>
                 }else{
@@ -32,10 +34,15 @@ const AccountModal = () => {
                     </SecondaryButton>
                 }
             })}
-            <PrimaryButton onClick={() => {
-                window.location = "/login";
+            <form method="dialog" className=" text-base ">
+            <button className="w-full" type="submit">
+            <PrimaryButton className={""} onClick={() => {
+                navigate("/login");
+
             }
             }>Add Account</PrimaryButton>
+            </button>
+            </form>
         </div>
       
     </dialog>
