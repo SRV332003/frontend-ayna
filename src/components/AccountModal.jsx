@@ -20,7 +20,7 @@ const AccountModal = () => {
         </div>
     
         <div className="flex flex-col gap-2">
-            {Object.keys(sessions).map((session, index) => {
+            {sessions && Object.keys(sessions).map((session, index) => {
                 if (session !== activeSession) {
                     return <SecondaryButton key={index} className="" onClick={() => {
                         localStorage.setItem("activeSession", session);

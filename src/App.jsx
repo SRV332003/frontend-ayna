@@ -17,7 +17,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <Login />,
+    element: <Chat />,
   },
   {
     path: "/chat",
@@ -37,16 +37,19 @@ function App() {
       localStorage.removeItem("messages_"+user.replace(/\s/g, ''));
     }
     let session = localStorage.getItem("sessions");
-    session = JSON.parse(session);
-    delete session[user];
-    localStorage.setItem("sessions",JSON.stringify(session));
-    if(Object.keys(session).length == 0){
-      localStorage.removeItem("activeSession");
-      window.location = "/login";
-      return;
+    if(session){
+      session = JSON.parse(session);
+      if(user in session) delete session[user];
+      localStorage.setItem("sessions",JSON.stringify(session));
+      if(Object.keys(session).length == 0){
+        localStorage.removeItem("activeSession");
+        window.location = "/login";
+        return;
+      }
+      localStorage.setItem("activeSession",Object.keys(session)[0]);
+      window.location = "/chat"
+
     }
-    localStorage.setItem("activeSession",Object.keys(session)[0]);
-    window.location = "/chat"
   }
 
   useEffect(()=>{

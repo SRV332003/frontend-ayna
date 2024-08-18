@@ -71,7 +71,7 @@ const Chat = () => {
 
     useEffect(() => {
         if (conn == null) {
-            setConn(new socketio.connect("ws://localhost:1337/", {
+            setConn(new socketio.connect("wss://strapi-backend-ayna.onrender.com/", {
                 path: "/chatws",
                 auth: {
                     token: session.jwt

@@ -1,6 +1,6 @@
 
 
-const API_BASE_URL = 'http://localhost:1337';
+const API_BASE_URL = 'https://strapi-backend-ayna.onrender.com';
 
 
 export { API_BASE_URL };
