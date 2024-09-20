@@ -34,7 +34,7 @@ function App() {
     <AuthProvider>
       <Router>
       <div className='w-screen h-screen flex flex-col bg-slate-100'>
-        <Navbar />
+        
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />

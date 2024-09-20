@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { PrimaryButton } from "../components/Button";
 import LeftMsg from "../components/leftMsg";
 import RightMsg from "../components/rightMsg";
@@ -7,20 +7,12 @@ import socketio from "socket.io-client";
 
 
 const Chat = () => {
-
-    const user = localStorage.getItem("activeSession");
-    if (!user) {
-        window.location.href = "/login";
-    }
-    const session = JSON.parse(localStorage.getItem("sessions"))[user];
-    const username = user.replace(/\s/g, '');
-    const [messages, setMessages] = useState(JSON.parse(localStorage.getItem("messages_"+username)) || []);
+    const username = localStorage.getItem("User");
+    
+    const [username2,setuser2] = localStorage.getItem("");
+    const [messages, setMessages] = useState([]);
     const [conn, setConn] = useState(null);
     
-
-    // const messages = JSON.parse(localStorage.getItem("messages")) || {user1: [], user3: []}; ;
-
-
     const handleSend = async (e) => {
         e.preventDefault();
         let jsonData = Object.fromEntries(new FormData(e.target).entries());
@@ -29,7 +21,7 @@ const Chat = () => {
             return;
         }
         let msg = {
-            identifier: user,
+            identifier: username,
             message: jsonData.message,
             time: new Date().toLocaleTimeString()
         }  
@@ -38,7 +30,7 @@ const Chat = () => {
             type: "message",
             data: {
                 message: msg.message,
-                sender: user,
+                sender: username,
                 time: msg.time
             }
         }
@@ -60,6 +52,10 @@ const Chat = () => {
                 const data = event.data;
                 updateMessages(data);
             }
+            if(event.type === "init"){
+                const data = event.data;
+                setuser2(data);
+            }
         });
     }, [messages])
 
@@ -71,10 +67,7 @@ const Chat = () => {
     useEffect(() => {
         if (conn == null) {
             setConn(new socketio.connect("wss://strapi-backend-ayna.onrender.com/", {
-                path: "/chatws",
-                auth: {
-                    token: session.jwt
-                }
+                path: "/chatws"
             }));
         }else
         conn.on("message",(e) => {
@@ -99,7 +92,7 @@ const Chat = () => {
                     }}>
                         <div className="flex flex-col gap-2 p-2 w-full">
                             {messages && messages.map((msg, index) => {
-                                if (msg.identifier === user) {
+                                if (msg.identifier === username) {
                                     return <RightMsg key={index} message={msg.message} time={msg.time} />
                                 } else {
                                     return <LeftMsg key={index} message={msg.message} time={msg.time} />
