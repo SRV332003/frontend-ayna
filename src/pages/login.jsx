@@ -16,39 +16,29 @@ const Login = () => {
         e.preventDefault();
         let jsonData = Object.fromEntries(new FormData(e.target).entries());
         
-        const resp = await loginApi(jsonData);
-        
-        if(resp){
-            if(resp.error &&  resp.error?.status != 200){
-                setErrMsg(resp.error?.message)
-                return;
-            }
-            console.log(resp)
-            login(resp.user,resp.jwt);
+        if(jsonData?.identifier){
+            localStorage.setItem("User",jsonData.identifier);
             navigate("/chat");
-        }
+        }else setErrMsg("UserName required");
     }   
 
 
     return (
         <div className="md:m-auto my-auto mx-2 border p-3 bg-white rounded-lg md:w-1/3">
-            <h1 className="text-2xl font-bold text-center border-b">Login</h1>
+            <h1 className="text-2xl font-bold text-center border-b">Enter your Username</h1>
             <form className="flex flex-col  overflow-auto" style={{
                 maxHeight: "calc(100vh - 7.5rem)"
             }}
             onSubmit={handleLogin}
             >
-                <input name="identifier" type="text" className="m-2 p-2 border rounded-md" placeholder="Email" />
-                <input name="password" type="password" className="m-2 p-2 border  rounded-md" placeholder="Password" />
-
+                <input name="identifier" type="text" className="m-2 p-2 border rounded-md" placeholder="Username" />
+                
+               
                 <div className=" text-red-600 text-xs mx-2">
                     {errMsg}
                 </div>
-                <div className="w-full text-end  text-sm px-2 ">
-                    Don't have Account? <Link to="/register" className=" font-semibold hover:underline text-blue-500">Regiser Here</Link>
-                </div>
                 <button type="submit" >
-                    <PrimaryButton className=" m-2 p-2  text-white ">Login</PrimaryButton>
+                    <PrimaryButton className=" m-2 p-2  text-white ">Enter Chat Roo</PrimaryButton>
                 </button>
             </form>
         </div>
